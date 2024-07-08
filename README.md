@@ -15,7 +15,7 @@ We ran into many bugs like sometimes the forms were not working which were easil
 At first clone the repository
 
 ```
-git clone https://github.com/Prashim-hack/BloodDonor.git
+git clone https://github.com/prashimpy/BloodDonor.git
 ```
 
 Now after you have cloned then you should have Python installed.

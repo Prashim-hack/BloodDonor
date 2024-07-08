@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+{% load static %}
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+	<title>Blood Request - Blood Donors</title>
+	<!-- links  -->
+	{% include 'ELEMENTS/head_links.html' %}
+	<!-- end links  -->
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+    <!-- NAVIGATION BAR  -->
+    {% include 'ELEMENTS/navigation.html' %}
+    <!-- NAVIGATION BAR END  -->
+        <div class="d-flex flex-column" id="content-wrapper">
+            <div id="content">
+            <!-- TOP NAVBAR  -->
+				{% include 'ELEMENTS/top_navbar.html' %}
+            <!-- TOP NAVBAR END  -->
+           
+                <div class="container-fluid">
+                    <h3 class="text-dark mb-4">Blood Requests</h3>
+                    
+                    <div class="card shadow">
+                        <div class="card-header py-3">
+                            <p class="text-primary m-0 fw-bold">Blood Requests</p>
+                        </div>
+                        <div class="card-body text-capitalize">
+                            <!-- <div class="row">
+                                <div class="col-md-6 text-nowrap">
+                                    <div id="dataTable_length" class="dataTables_length" aria-controls="dataTable">
+                                        <label class="form-label">Show&nbsp;
+                                            <select class="d-inline-block form-select form-select-sm">
+                                                <option value="10" selected="">10</option>
+                                                <option value="25">25</option>
+                                                <option value="50">50</option>
+                                                <option value="100">100</option>
+                                            </select>&nbsp;
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="text-md-end dataTables_filter" id="dataTable_filter">
+                                        <label class="form-label">
+                                            <input type="search" class="form-control form-control-sm" aria-controls="dataTable" placeholder="Search">
+                                        </label>
+                                    </div>
+                                </div>
+                            </div> -->
+                            <div class="table-responsive table mt-2" id="dataTable" role="grid"
+                                aria-describedby="dataTable_info">
+                                <table class="table my-0" id="dataTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Reason</th>
+                                            <th>Blood Group</th>
+                                            <th>Location</th>
+                                            <th>Age</th>
+                                            <th>Asked Date</th>
+                                            <th>Donate</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% load humanize %}
+                                        {% for item in blood_request_list %}
+
+                                        <tr>
+                                            <td>&nbsp; {{item.first_name }} {{item.last_name}} </td>
+                                            <td class="text-capitalize">{{ item.reason }}</td>
+                                            <td class="text-capitalize">{{item.blood_group}}</td>
+                                            <td>{{ item.address }}</td>
+                                            <td>{{ item.Age }}</td>
+                                            <!-- time in format of July 17, 2022 -->
+                                            <td>{{ item.time | naturalday}}</td>
+                                            <td class="btn-danger btn mt-1 mb-1"
+                                                style="background: #ff4a4a;border: 1px solid #ff4a4a;width: 100%;" id="donate-{{item.id}}" data-bs-toggle="modal" data-bs-target="#exampleModal-{{item.id}}">
+                                                Donate</td>
+                                        </tr>
+                                                <!-- when clicked on donate pop up will appear -->
+                                                <!-- Button trigger modal --> 
+                                                <!-- Button trigger modal -->
+
+  
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal-{{item.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="background-color: white;border-radius:4.7px;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Info</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <p class="text-primary m-0 fw-bold">Report</p>
+                </div>
+                <div class="card-body">
+                    <a href="{{ item.report.url }}" target="_blank">
+                   <img src="{{item.report.url}}" alt="" style="width: 100%;height:100%;">
+                </a>
+                </div>
+            </div>
+            <br>
+            <!-- jusr show the ........@gmail.com  -->
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <p class="text-primary m-0 fw-bold">Email</p>
+                </div>
+                <div class="card-body">
+                    <p>{{item.email}}</p>
+                </div>
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <form action="{% url 'email_send' %}" method="POST" class="id_ajax_upload_form">
+                {% csrf_token %}
+               
+                    <input type="hidden" name="use" value="{{ request.user.id }}">
+                    <input type="hidden" name="requester_id" value="{{ item.id }}">
+                {% csrf_token %}
+                    <button type="submit" class="btn btn-alert" style="background: #ff4a4a;color:white;" id="donate-{{item.id}}">
+                        Send My Info
+                    </button>
+                    
+            </form> 
+        </div>
+      </div>
+    </div>
+  </div>
+    </tr>
+        
+        {% endfor %}
+        
+    </tbody>
+    
+</table>
+</div>
+            <div class="row">
+                <!-- <div class="col-md-6 align-self-center">
+                    <p id="dataTable_info" class="dataTables_info" role="status" aria-live="polite">
+                        Showing 1 to 10 of 27</p>
+                </div> -->
+                <div class="col-md-6">
+                    <!-- <nav
+                        class="d-lg-flex justify-content-lg-end dataTables_paginate paging_simple_numbers">
+                        <ul class="pagination">
+                            <li class="page-item disabled"><a class="page-link" href="#"
+                                    aria-label="Previous"><span aria-hidden="true">«</span></a></li>
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item"><a class="page-link" href="#" aria-label="Next"><span
+                                        aria-hidden="true">»</span></a></li>
+                        </ul>
+                    </nav> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+
+           {% include 'ELEMENTS/footer.html' %}
+        </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
+    </div>
+    <!-- popup model -->
+      <!-- Modal -->
+ 
+    <!-- scripts -->
+    {% include 'ELEMENTS/scripts.html' %}
+    <!-- scripts end -->
+    <!-- send mail in tha backend using ajax -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+         $('.id_ajax_upload_form').submit(function (e) {
+            e.preventDefault();
+            var form = $(this);
+            var formData = new FormData(this);
+
+            $.ajax({
+                url: form.attr('action'),
+                type: form.attr('method'),
+                data: formData,
+                cache: false,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    location.reload();
+
+                }
+            });
+            // and show a message that mail has been sent
+            alert("Mail has been sent");
+            // reload page
+            
+
+
+        });
+
+    </script>
+
+</body>
+
+</html>
